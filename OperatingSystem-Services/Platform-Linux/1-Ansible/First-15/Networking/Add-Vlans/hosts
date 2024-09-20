@@ -1,0 +1,3 @@
+[vlan-machines]
+group4_proxy ansible_host=192.168.1.167 vlan_ip=172.20.0.3 vlan_gateway=172.20.0.1 ansible_user=blueteam
+group4_soc ansible_host=192.168.1.36 vlan_ip=172.20.0.2 vlan_gateway=172.20.0.1 ansible_user=blueteam

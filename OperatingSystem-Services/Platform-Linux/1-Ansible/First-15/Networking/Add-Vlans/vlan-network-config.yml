@@ -1,0 +1,38 @@
+---
+- name: Configure network for VLAN on all machines
+  hosts: vlan-machines
+  become: yes
+  gather_facts: yes  # Ensures facts are gathered at the start
+  tasks:
+    - name: Gather network interface facts
+      ansible.builtin.setup:
+        gather_subset:
+          - 'network'
+    - name: Create .ssh directory if not exists
+      file:
+        path: /home/{{ ansible_user }}/.ssh
+        state: directory
+        mode: '0700'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        
+    - name: Authorize SSH key for passwordless login
+      authorized_key:
+        user: "{{ ansible_user }}"
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+        manage_dir: no
+
+    - name: Backup existing netplan config
+      copy:
+        src: /etc/netplan/50-cloud-init.yaml
+        dest: /etc/netplan/50-cloud-init.yaml.bak
+        remote_src: yes
+
+    - name: Configure netplan for VLAN network
+      template:
+        src: netplan_template.j2
+        dest: /etc/netplan/50-cloud-init.yaml
+
+    - name: Try netplan configuration
+      command: netplan apply

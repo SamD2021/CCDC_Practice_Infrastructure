@@ -1,0 +1,2 @@
+[vlan-machines]
+<new_machine> ansible_host=<public_ip> vlan_ip=<vlan_ip:172.20.0.4> vlan_gateway=172.20.0.1 ansible_user=blueteam

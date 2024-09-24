@@ -1,0 +1,29 @@
+---
+- name: Set up system-wide proxy on all machines
+  hosts: all
+  become: yes
+  vars:
+    proxy_ip: "10.52.0.91"  
+    proxy_port: "3128"         
+
+  tasks:
+    - name: Add system-wide proxy environment variables
+      lineinfile:
+        dest: /etc/environment
+        state: present
+        create: yes
+        line: "{{ item }}"
+      loop:
+        - 'http_proxy="http://{{ proxy_ip }}:{{ proxy_port }}/"'
+        - 'https_proxy="http://{{ proxy_ip }}:{{ proxy_port }}/"'
+        - 'no_proxy="localhost,127.0.0.1,::1"' 
+
+    - name: Add APT proxy settings
+      copy:
+        dest: /etc/apt/apt.conf.d/95proxies
+        content: |
+          Acquire::http::Proxy "http://{{ proxy_ip }}:{{ proxy_port }}/";
+          Acquire::https::Proxy "http://{{ proxy_ip }}:{{ proxy_port }}/";
+
+    - name: Apply proxy environment settings for the current session
+      shell: . /etc/environment

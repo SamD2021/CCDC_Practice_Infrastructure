@@ -1,0 +1,7 @@
+- name: Install and Configure Wazuh Agent
+  hosts: all
+  roles:
+    - role: darkdecoy.wazuh
+  vars:
+    wazuh_manager_ip: "YOUR_WAZUH_SERVER_IP"
+    wazuh_registration_password: "YOUR_REGISTRATION_PASSWORD"

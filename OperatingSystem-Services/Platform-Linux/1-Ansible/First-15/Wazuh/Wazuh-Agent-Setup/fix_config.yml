@@ -1,0 +1,17 @@
+---
+- name: Replace ossec.conf with known good state
+  hosts: internal-machines
+  become: yes
+  tasks:
+    - name: Copy known good ossec.conf to the target machines
+      copy:
+        src: ./ossec.conf  # Replace with the path to your known good config
+        dest: /var/ossec/etc/ossec.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Restart Wazuh agent to apply the new configuration
+      service:
+        name: wazuh-agent
+        state: restarted

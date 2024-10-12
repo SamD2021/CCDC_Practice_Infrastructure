@@ -1,0 +1,58 @@
+---
+- name: Install Docker and correct ossec.conf
+  hosts: internal-machines
+  become: yes
+  tasks:
+
+    - name: Install dependencies for Docker
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+        update_cache: yes
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Get Ubuntu release codename
+      command: lsb_release -cs
+      register: ubuntu_release_codename
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ubuntu_release_codename.stdout }} stable"
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Add Docker listener before </ossec_config>
+      blockinfile:
+        path: /var/ossec/etc/ossec.conf
+        insertbefore: "</ossec_config>"
+        marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+        block: |
+          <wodle name="docker-listener">
+            <disabled>no</disabled>
+            <interval>10m</interval>
+            <run_on_start>yes</run_on_start>
+          </wodle>
+
+    - name: Restart Wazuh agent to apply changes
+      service:
+        name: wazuh-agent
+        state: restarted
+

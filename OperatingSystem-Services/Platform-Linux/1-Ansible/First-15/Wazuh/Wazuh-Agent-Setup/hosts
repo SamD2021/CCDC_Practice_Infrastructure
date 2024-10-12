@@ -1,0 +1,11 @@
+[internal-machines]
+group4proxy ansible_host=10.52.0.91 ansible_user=blueteam
+group4soc ansible_host=10.52.0.253 ansible_user=blueteam
+group4a ansible_host=10.52.2.189 ansible_user=blueteam
+group4b ansible_host=10.52.0.249 ansible_user=blueteam
+group4c ansible_host=10.52.0.220 ansible_user=blueteam
+group4d ansible_host=10.52.0.241 ansible_user=blueteam
+group4e ansible_host=10.52.0.251 ansible_user=blueteam
+group4f ansible_host=10.52.0.243 ansible_user=blueteam
+group4g ansible_host=10.52.0.250 ansible_user=blueteam
+group4h ansible_host=10.52.0.252 ansible_user=blueteam

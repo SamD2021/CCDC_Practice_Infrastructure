@@ -1,7 +1,30 @@
-- name: Install and Configure Wazuh Agent
-  hosts: all
-  roles:
-    - role: darkdecoy.wazuh
-  vars:
-    wazuh_manager_ip: "YOUR_WAZUH_SERVER_IP"
-    wazuh_registration_password: "YOUR_REGISTRATION_PASSWORD"
+---
+- name: Enable Docker listener on Wazuh agents
+  hosts: internal-machines
+  become: yes
+  tasks:
+    - name: Install necessary Python packages using apt
+      apt:
+        name:
+          - python3-docker
+          - python3-urllib3
+          - python3-requests
+        state: present
+        update_cache: yes
+
+    - name: Configure Docker listener in ossec.conf
+      blockinfile:
+        path: /var/ossec/etc/ossec.conf
+        insertafter: "<wodle name=\"docker\">"
+        block: |
+          <wodle name="docker-listener">
+            <disabled>no</disabled>
+            <interval>10m</interval>
+            <run_on_start>yes</run_on_start>
+          </wodle>
+
+    - name: Restart Wazuh agent
+      service:
+        name: wazuh-agent
+        state: restarted
+

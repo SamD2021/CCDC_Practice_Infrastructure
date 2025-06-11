@@ -417,7 +417,7 @@ Written By: Ryan Widdop
     Navigate to `Scans > Reports` on the left side menu. Wait while the scan runs. The percentage on the task will update as the scan progresses.
     <img  src="Images/WebReports.png">
 
-    Once the scan finishes, navigate to `Scans > Vulnerabilities` on the left side The scans can take a while depending on what configuration you chose. Scanning many IPs at once will take a while. All of the vulnerabilities found will be listed here in order of severity.
+    Once the scan finishes, navigate to `Scans > Vulnerabilities` on the left side. The scans can take a while depending on what configuration you chose. Scanning many IPs at once will take a while. All of the vulnerabilities found will be listed here in order of severity.
     <img  src="Images/WebVulnerabilities.png">
 
     By clicking on a vulnerability you can see a description. It will you show you a summary, score, insight, detection method, impact, and solution for each vulnerability. Additionally, it will give you links to the vulnerability disclosure which you can use to see methods of exploiting the vulnerability.

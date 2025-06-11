@@ -420,4 +420,5 @@ Written By: Ryan Widdop
     By clicking on a vulnerability you can see a description. It will you show you a summary, score, insight, detection method, impact, and solution for each vulnerability. Additionally, it will give you links to the vulnerability disclosure which you can use to see methods of exploiting the vulnerability.
     <img  src="Images/WebCVE.png">
 
->[!NOTE]This concludes the guide for OpenVAS. This guide is mainly for the setup of OpenVAS / GVM. It is a powerfull tool and has many use cases that are not shown in this demonstration.
+> [!NOTE]
+> This concludes the guide for OpenVAS. This guide is mainly for the setup of OpenVAS / GVM. It is a powerfull tool and has many use cases that are not shown in this demonstration.

@@ -49,7 +49,7 @@ Written By: Ryan Widdop
 	```
 	export DOWNLOAD_DIR=$HOME/greenbone-community-container && mkdir -p $DOWNLOAD_DIR
 	```
-- Creates directory `greenbone-community-container` in the users home directory.
+    - Creates directory `greenbone-community-container` in the users home directory.
 
 3. **Download Docker Compose File**
 	```

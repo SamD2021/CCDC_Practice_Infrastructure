@@ -76,7 +76,8 @@ Written By: Ryan Widdop
 			Navigate to the **gsa** image and change the ports from `127.0.0.1:9392:90` to either `0.0.0.0:9392:80` or `<EXTERNAL_IP>:9392:80`
 			<img  src="Images/gsaHTTPS.png">
 	- **Configure `https` instead of `http`**
-        >[!WARNING] DO NOT USE HTTP
+        >[!WARNING]
+        > Unless you have no other options you should not use HTTP as all communications (Including found vulnerabilities) will be unencrypted.
 
 		- By default GSA will use `http` which is very dangerous unless you  want all of your network's vulnerabilities to be public.
 			To solve this we must reconfigure the **gsa** container once again.

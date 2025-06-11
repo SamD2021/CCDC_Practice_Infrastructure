@@ -344,7 +344,8 @@ Written By: Ryan Widdop
 
 5. **Starting The Docker Containers**
     
-    > [!NOTE] This process could take a long time (Possibly several hours) depending on your machine's resources. Consider using tmux to run commands in order to save and come back.
+    > [!IMPORTANT]
+    > This process could take a long time (Possibly several hours) depending on your machine's resources. Consider using tmux to run commands in order to save and come back.
 
     **Pull (download) the docker images:**
     ```

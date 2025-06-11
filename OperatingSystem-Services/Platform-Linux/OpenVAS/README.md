@@ -99,7 +99,8 @@ Written By: Ryan Widdop
             ```
             sudo chmod 660 /home/<USER>/docker_keys/serverkey.pem
             ```
-            >[!WARNING] This is not secure, however, I have not found a better way. Using the default permissions (600), the gvm user inside the gsa container is unable to access the file once passed in.
+            > [!WARNING]
+            > This is not secure, however, I have not found a better way. Using the default permissions (600), the gvm user inside the gsa container is unable to access the file once passed in.
             
 
         <details>

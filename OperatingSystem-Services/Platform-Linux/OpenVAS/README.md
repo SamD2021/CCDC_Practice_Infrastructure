@@ -55,7 +55,7 @@ Written By: Ryan Widdop
 	```
 	cd $DOWNLOAD_DIR && curl -f -L https://greenbone.github.io/docs/latest/_static/docker-compose-22.4.yml -o docker-compose.yml
 	```
-- Downloads `docker-compose.yml` to the greenbone download directory.
+    - Downloads `docker-compose.yml` to the Greenbone download directory.
 
 4. **Configure Docker Compose File**
 	- **Switch Image Version to Latest**

@@ -1,0 +1,39 @@
+# Containerfile: easy-process-enum
+FROM quay.io/fedora/fedora-bootc:latest
+
+# Use dnf5, strip down image
+RUN dnf5 install -y procps-ng psmisc util-linux which \
+    && dnf5 clean all
+
+# Add a fake suspicious process script
+RUN useradd attacker && \
+    cat > /usr/local/bin/cryptominer.sh <<'EOF'
+#!/bin/bash
+while true; do
+  echo "$(date -Is) - mining..." >> /var/log/cryptominer.log
+  sleep 60
+done
+EOF
+RUN chmod +x /usr/local/bin/cryptominer.sh && \
+    chown attacker:attacker /usr/local/bin/cryptominer.sh
+
+# Create systemd service with heredoc
+RUN cat > /etc/systemd/system/cryptominer.service <<'EOF'
+[Unit]
+Description=Fake Cryptominer Process
+After=network.target
+
+[Service]
+Type=simple
+User=attacker
+ExecStart=/usr/local/bin/cryptominer.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Enable the service so it runs on boot
+RUN systemctl enable cryptominer.service
+
+CMD ["/bin/bash"]

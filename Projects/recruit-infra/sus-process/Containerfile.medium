@@ -1,0 +1,20 @@
+# Containerfile: medium-rootless-container
+FROM quay.io/fedora/fedora-bootc:latest
+
+# Install rootless container prerequisites
+RUN dnf5 install -y \
+    tmux \
+    && dnf5 clean all
+
+# Add a flag file for the recruit to serve from a container
+#
+RUN mkdir /etc/dont_look/ && echo "FLAG{medium-rootless-$(date +%s)}" > /etc/dont_look/flag.txt && \
+    chmod 777 /etc/dont_look/flag.txt
+
+# Optional: create a www directory for volume mount convenience
+RUN mkdir -p /etc/task/www && \
+    chmod 777 /etc/task/www
+
+# Default to shell
+CMD ["/bin/bash"]
+

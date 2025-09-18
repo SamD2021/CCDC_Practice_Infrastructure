@@ -1,0 +1,14 @@
+{
+  "customizations": {
+    "user": [
+      {
+        "name": "recruit",
+        "password": "1qazxsW@1",
+        "key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDGgemwP9kt6Cg6ql5si9DqMTOtA24GSM+XsUwxmeNON bazzite@bazzite",
+        "groups": [
+          "wheel"
+        ]
+      }
+    ]
+  }
+}

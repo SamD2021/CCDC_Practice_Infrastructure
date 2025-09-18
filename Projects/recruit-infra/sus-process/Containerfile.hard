@@ -1,0 +1,25 @@
+# Containerfile.hard
+FROM quay.io/samueldasilva/recruit-task:base
+
+# Copy the Quadlet spec for logically binding the trap container
+COPY recruit-trap.container /usr/share/containers/systemd/recruit-trap.container
+
+# Copy the enter-trap launcher into the VM
+COPY enter-trap.sh /usr/local/bin/enter-trap.sh
+RUN chmod 0755 /usr/local/bin/enter-trap.sh
+
+# Ensure bootc knows this bound image exists (logical binding)
+RUN mkdir -p /usr/lib/bootc/bound-images.d && \
+    ln -sf /usr/share/containers/systemd/recruit-trap.container \
+          /usr/lib/bootc/bound-images.d/recruit-trap.container
+
+
+# RUN echo 'exec /usr/local/bin/enter-trap.sh' > /etc/profile.d/00-trap.sh && \
+#     chmod 644 /etc/profile.d/00-trap.sh
+
+# Ensure /usr/local/bin is executable and owned appropriately
+RUN chown root:root /usr/local/bin/enter-trap.sh && chmod 0755 /usr/local/bin/enter-trap.sh
+
+# default to interactive shell
+CMD ["/bin/bash", "--login"]
+

@@ -1,0 +1,22 @@
+[Unit]
+Description=Recruit trap container
+
+[Container]
+# Use the trap image pinned to a specific tag (avoid :latest in real labs)
+Image=quay.io/samueldasilva/recruit-task:trap
+
+# Preserve host hostname so recruits see "fedora"
+HostName=%H
+# Share networking so curl/ping/etc behave naturally
+Network=host
+
+# Make it run in the background (systemd will restart if it exits)
+PodmanArgs=--rm=false --storage-opt=additionalimagestore=/usr/lib/bootc/storage
+AutoUpdate=registry
+User=recruit
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

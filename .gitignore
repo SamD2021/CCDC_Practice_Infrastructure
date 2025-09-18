@@ -14,3 +14,7 @@ exported-certs
 blue-team*
 instance_information.csv
 terraform.tfstate
+*.img
+*.raw
+*.qcow2
+*.iso

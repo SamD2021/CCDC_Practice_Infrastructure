@@ -1,0 +1,29 @@
+# Containerfile: base-image
+# pin the base image for reproducibility (replace 40 with the version you want)
+FROM quay.io/fedora/fedora-bootc:40
+
+# Install some common utilities (on top of minimal bootc image)
+RUN dnf5 install -y \
+      nmap \
+      tmux \
+      vim-enhanced \
+      distrobox \
+    && dnf5 clean all
+
+# Configure passwordless sudo for wheel group
+RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/99-wheel-nopasswd \
+    && chmod 440 /etc/sudoers.d/99-wheel-nopasswd
+
+# Create recruit account (use precomputed SHA-512 hash — note single quotes!)
+RUN useradd -m -s /bin/bash -G wheel recruit \
+    && usermod -p '$6$ORYYeOoowC4qJLNl$tfsfdckFNdC4DGg43kpjiXKit9y53izEb7ydSGqlsHqw/aoG5kjcuqRejlCOw7hAO9BIiS1ErVQK/eN9JpmD50' recruit \
+    && chmod 700 /home/recruit && chown -R recruit:recruit /home/recruit
+
+# Create grader user with a known password (for testing)
+RUN useradd -m -s /bin/bash -G wheel grader \
+    && usermod -p '$6$zSRod5tLC2YHxppD$ygETUdeuLh7oKY7CL1YPHer6klHjNWX87MSoWE6J3nhyReh3qWynj58e8ARpg0Mr6h802FL0fVOmevqah6wId1' grader \
+    && chmod 700 /home/grader && chown -R grader:grader /home/grader
+
+# Default command
+CMD ["/bin/bash"]
+

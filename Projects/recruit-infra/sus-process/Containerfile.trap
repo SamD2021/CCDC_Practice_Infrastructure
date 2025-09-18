@@ -1,0 +1,84 @@
+# Containerfile.trap
+# Minimal "host-like" userspace that actually runs as a container (no systemd).
+FROM registry.fedoraproject.org/fedora:41
+
+# Build-time markers (override with --build-arg)
+ARG TRAP_MARKER="default-trap-marker-$(date +%s)"
+ARG CONTAINER_FLAG="FLAG{trap-container-$(date +%s)}"
+
+# Locale and home setup
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+ENV HOME=/home/recruit
+
+# Small toolbox
+RUN dnf -y update -q && \
+    dnf -y install -q --setopt=install_weak_deps=False \
+      procps-ng \
+      iproute \
+      util-linux \
+      bind-utils \
+      less \
+      strace \
+      nmap \
+      sqlite && \
+    dnf -y clean all && rm -rf /var/cache/dnf /var/tmp/*
+
+# Create recruit user with a normal home (use useradd)
+RUN useradd -m -s /bin/bash recruit
+
+# Grader-only hidden marker (root-owned, unreadable by normal recruit)
+RUN printf '%s\n' "${TRAP_MARKER}" > /etc/.trap_marker && \
+    chmod 600 /etc/.trap_marker && chown root:root /etc/.trap_marker
+
+# Create miner-style current log and old rotated log and sprinkle the flag
+RUN mkdir -p /var/log && \
+    # current log: mix of noise then a flagged line
+    for i in 1 2 3 4 5 6 7 8 9 10; do \
+      echo "$(date -Is) - miner: heartbeat id=$i" >> /var/log/cryptominer.log; \
+    done && \
+    echo "$(date -Is) - miner: event: initialized" >> /var/log/cryptominer.log && \
+    echo "$(date -Is) - miner: event: ${CONTAINER_FLAG}" >> /var/log/cryptominer.log && \
+    # create an "old" rotated log containing the flag as well
+    mkdir -p /var/log/old && \
+    printf '%s\n' "$(date -Is) - miner: archived start" > /var/log/old/cryptominer.log && \
+    printf '%s\n' "archived: ${CONTAINER_FLAG}" >> /var/log/old/cryptominer.log && \
+    gzip -9 /var/log/old/cryptominer.log && \
+    # set permissions: readable by recruits (so they can find it)
+    chmod 644 /var/log/cryptominer.log /var/log/old/cryptominer.log.gz && chown root:root /var/log/cryptominer.log /var/log/old/cryptominer.log.gz
+
+# Add a suspicious cron entry
+
+RUN mkdir -p /etc/cron.d/ && cat > /etc/cron.d/miner-job <<'CRON'
+# suspicious miner job - do not remove
+*/15 * * * * root /usr/local/sbin/run_miner.sh
+CRON
+
+RUN chmod 644 /etc/cron.d/miner-job
+
+# Add the persistent script
+RUN cat > /usr/local/sbin/run_miner.sh <<'SH'
+#!/bin/bash
+# persistence stub
+# FLAG_HINT: check cryptominer logs for event keys
+exit 0
+SH
+
+RUN chmod 750 /usr/local/sbin/run_miner.sh && chown root:root /usr/local/sbin/run_miner.sh
+
+# Create an innocuous evidence directory (owned by recruit)
+RUN mkdir -p ${HOME}/evidence && chown recruit:recruit ${HOME}/evidence
+
+# Friendly prompt in home
+RUN echo 'export PS1="\\u@\\h:\\w\\$ "' >> ${HOME}/.bashrc && chown recruit:recruit ${HOME}/.bashrc
+
+# Ensure home ownership is correct
+RUN chown -R recruit:recruit /home/recruit
+
+# Default to recruit user for interactive runs
+USER recruit
+WORKDIR /home/recruit
+
+# Keep container alive for Quadlet/systemd
+CMD ["sleep", "infinity"]
+
